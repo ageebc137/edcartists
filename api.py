@@ -1,14 +1,16 @@
 import flask
+import csv
 from flask import request, jsonify
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-artists = [
-    {'name': 'Martin Garrix'},
-    {'name': 'Jonas Blue'},
-    {'name': 'Diplo'}
-]
+LINEUP = []
+
+with open('static/EDC_Lineups_2019.csv', newline="") as csvfile:
+    reader = csv.reader(csvfile)
+
+
 
 
 @app.route('/', methods=['GET'])
@@ -17,7 +19,7 @@ def home():
 
 @app.route('/api/v1/resources/artists/all', methods=['GET'])
 def api_all():
-    return jsonify(artists)
+    return jsonify(LINEUP)
 
 @app.route('/api/v1/resources/artists', methods=['GET'])
 def api_id():
@@ -29,11 +31,11 @@ def api_id():
 
     results = []
 
-    for book in books:
-        if book['id'] == id:
-            results.append(book)
+    for artist in LINEUP:
+        results.append(artist)
 
 
     return jsonify(results);
 
-app.run()
+if __name__ == '__name__':
+    app.run()
